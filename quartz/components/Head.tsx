@@ -90,6 +90,7 @@ export default (() => {
         )}
 
         <link rel="icon" href={iconPath} />
+        <link rel="apple-touch-icon" sizes="180x180" href={iconPath} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
 
