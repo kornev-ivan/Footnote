@@ -5,21 +5,6 @@ import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
 
-const syncFootnoteIcon = `
-  (() => {
-    const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
-    function syncIcons() {
-      for (const icon of document.querySelectorAll("link[data-dark-icon]")) {
-        const href = colorScheme.matches ? icon.dataset.darkIcon : icon.dataset.lightIcon;
-        if (href && icon.getAttribute("href") !== href) icon.setAttribute("href", href);
-      }
-    }
-    syncIcons();
-    colorScheme.addEventListener("change", syncIcons);
-    document.addEventListener("nav", syncIcons);
-  })();
-`
-
 export default (() => {
   const Head: QuartzComponent = ({
     cfg,
@@ -40,8 +25,8 @@ export default (() => {
     const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
     const path = url.pathname as FullSlug
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
-    const lightIcon = joinSegments(baseDir, "static/footnote-icon-light.png")
-    const darkIcon = joinSegments(baseDir, "static/footnote-icon-dark.png")
+    const favicon = joinSegments(baseDir, "static/icon.png")
+    const touchIcon = joinSegments(baseDir, "static/footnote-icon-dark.png")
 
     // Url of current page
     const socialUrl =
@@ -105,21 +90,8 @@ export default (() => {
           </>
         )}
 
-        <link
-          rel="icon"
-          type="image/png"
-          href={lightIcon}
-          data-light-icon={lightIcon}
-          data-dark-icon={darkIcon}
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href={lightIcon}
-          data-light-icon={lightIcon}
-          data-dark-icon={darkIcon}
-        />
-        <script data-persist="" dangerouslySetInnerHTML={{ __html: syncFootnoteIcon }} />
+        <link rel="icon" type="image/png" href={favicon} />
+        <link rel="apple-touch-icon" sizes="180x180" href={touchIcon} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
 
