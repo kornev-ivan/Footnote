@@ -8,7 +8,7 @@ configuration:
   analytics:
     provider: plausible
   locale: en-US
-  baseUrl: footnote-77a.pages.dev
+  baseUrl: quartz.jzhao.xyz
   ignorePatterns:
     - private
     - templates
