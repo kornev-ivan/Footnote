@@ -1,9 +1,16 @@
+import { createHash } from "node:crypto"
+import { readFileSync } from "node:fs"
 import { i18n } from "../i18n"
-import { FullSlug, getFileExtension, joinSegments, pathToRoot } from "../util/path"
+import { FullSlug, QUARTZ, getFileExtension, joinSegments, pathToRoot } from "../util/path"
 import { CSSResourceToStyleElement, JSResourceToScriptElement } from "../util/resources"
 import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
+
+const faviconVersion = createHash("sha256")
+  .update(readFileSync(joinSegments(QUARTZ, "static/icon.png")))
+  .digest("hex")
+  .slice(0, 12)
 
 export default (() => {
   const Head: QuartzComponent = ({
@@ -25,7 +32,8 @@ export default (() => {
     const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
     const path = url.pathname as FullSlug
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
-    const favicon = joinSegments(baseDir, "static/icon.png")
+    const favicon = joinSegments(baseDir, "static/icon.png") + `?v=${faviconVersion}`
+    const fallbackFavicon = joinSegments(baseDir, "favicon.ico") + `?v=${faviconVersion}`
     const touchIcon = joinSegments(baseDir, "static/footnote-icon-dark.png")
 
     // Url of current page
@@ -90,6 +98,7 @@ export default (() => {
           </>
         )}
 
+        <link rel="icon" type="image/x-icon" sizes="48x48" href={fallbackFavicon} />
         <link rel="icon" type="image/png" href={favicon} />
         <link rel="apple-touch-icon" sizes="180x180" href={touchIcon} />
         <meta name="description" content={description} />
