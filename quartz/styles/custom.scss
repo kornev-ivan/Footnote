@@ -1,3 +1,122 @@
 @use "./variables.scss" as *;
 
-// put your custom CSS here!
+:root {
+  --footnote-accent: #a64200;
+  --footnote-accent-hover: #863400;
+  --footnote-accent-soft: #c65a0e;
+}
+
+:root[saved-theme="dark"] {
+  --footnote-accent: #ff9b54;
+  --footnote-accent-hover: #ffb784;
+  --footnote-accent-soft: #ffae75;
+}
+
+body {
+  --color-accent: var(--footnote-accent);
+  --color-accent-1: var(--footnote-accent-hover);
+  --color-accent-2: var(--footnote-accent-soft);
+  --interactive-accent: var(--footnote-accent);
+  --interactive-accent-hover: var(--footnote-accent-hover);
+  --link-color: var(--footnote-accent);
+  --link-color-hover: var(--footnote-accent-hover);
+  --link-external-color: var(--footnote-accent);
+  --link-external-color-hover: var(--footnote-accent-hover);
+}
+
+#quartz-root > #quartz-body {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding: max(4.5rem, calc(env(safe-area-inset-top) + 3.5rem)) 1rem 2rem;
+
+  .page-header {
+    margin: 0;
+  }
+
+  .sidebar.left,
+  > .center > hr,
+  > .center > .page-footer:empty,
+  button.darkmode {
+    display: none;
+  }
+
+  > .sidebar.right {
+    position: fixed;
+    inset: 0 0 auto auto;
+    z-index: 10;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  > .sidebar.right > .explorer {
+    --menu-top: max(0.75rem, env(safe-area-inset-top));
+    --menu-right: max(0.75rem, env(safe-area-inset-right));
+    overflow: visible;
+
+    > button.desktop-explorer,
+    > button.mobile-explorer.hide-until-loaded {
+      display: none;
+    }
+
+    > button.mobile-explorer:not(.hide-until-loaded) {
+      position: fixed;
+      top: var(--menu-top);
+      right: var(--menu-right);
+      z-index: 102;
+      display: grid;
+      place-items: center;
+      box-sizing: border-box;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 1px solid var(--lightgray);
+      border-radius: 0.75rem;
+      color: var(--footnote-accent);
+      background: var(--light);
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--footnote-accent);
+        outline-offset: 2px;
+      }
+
+      svg {
+        stroke: currentColor;
+      }
+    }
+
+    > .explorer-content {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 101;
+      box-sizing: border-box;
+      width: min(22rem, 100%);
+      max-width: none;
+      height: 100dvh;
+      max-height: none;
+      margin: 0;
+      padding: calc(var(--menu-top) + 3.5rem) var(--menu-right)
+        max(1rem, env(safe-area-inset-bottom)) 1.25rem;
+      overflow: auto;
+      overscroll-behavior: contain;
+      border-left: 1px solid var(--lightgray);
+      background: var(--light);
+      box-shadow: -0.4rem 0 1.5rem rgb(0 0 0 / 13%);
+    }
+
+    &.collapsed > .explorer-content,
+    > .hide-until-loaded ~ .explorer-content {
+      display: none;
+    }
+  }
+
+  &:has(> .sidebar.right .explorer) > .center {
+    transform: none;
+  }
+}
