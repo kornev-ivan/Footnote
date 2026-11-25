@@ -1,12 +1,6 @@
 @use "./variables.scss" as *;
 
 :root {
-  --footnote-accent: #a64200;
-  --footnote-accent-hover: #863400;
-  --footnote-accent-soft: #c65a0e;
-}
-
-:root {
   --footnote-accent: #ff6a03;
   --footnote-accent-hover: #e45800;
   --footnote-accent-soft: #ff873d;
@@ -30,17 +24,22 @@ body {
   width: 100%;
   max-width: 48rem;
   margin-inline: auto;
-  padding: max(4.5rem, calc(env(safe-area-inset-top) + 3.5rem)) 1rem 2rem;
-
-  .page-header {
-    margin: 0;
-  }
+  padding: max(0.75rem, env(safe-area-inset-top)) 1rem 2rem;
 
   .sidebar.left,
+  > .center > .page-header:not(:has([data-quartz-component])),
   > .center > hr,
   > .center > .page-footer:empty,
   button.darkmode {
     display: none;
+  }
+
+  > .center > article {
+    margin-block-start: 0;
+
+    > :first-child {
+      margin-block-start: 0;
+    }
   }
 
   > .sidebar.right {
@@ -118,5 +117,9 @@ body {
 
   &:has(> .sidebar.right .explorer) > .center {
     transform: none;
+
+    > article > :is(h1, h2, h3, h4, h5, h6, p):first-child {
+      padding-inline-end: 3.5rem;
+    }
   }
 }
