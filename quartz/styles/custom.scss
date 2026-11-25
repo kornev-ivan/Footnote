@@ -24,7 +24,7 @@ body {
   width: 100%;
   max-width: 48rem;
   margin-inline: auto;
-  padding: max(0.75rem, env(safe-area-inset-top)) 1rem 2rem;
+  padding: calc(max(0.75rem, env(safe-area-inset-top)) + 0.5rem) 1rem 2rem;
 
   .sidebar.left,
   > .center > .page-header:not(:has([data-quartz-component])),
