@@ -7,10 +7,34 @@ import { googleFontHref, googleFontSubsetHref } from "../util/theme"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { unescapeHTML } from "../util/escape"
 
-const faviconVersion = createHash("sha256")
-  .update(readFileSync(joinSegments(QUARTZ, "static/icon.png")))
-  .digest("hex")
-  .slice(0, 12)
+function iconVersion(path: string) {
+  return createHash("sha256")
+    .update(readFileSync(joinSegments(QUARTZ, path)))
+    .digest("hex")
+    .slice(0, 12)
+}
+
+const faviconPath = "static/icon.png"
+const faviconVersion = iconVersion(faviconPath)
+const lightTouchIconPath = "static/footnote-icon-light.png"
+const darkTouchIconPath = "static/footnote-icon-dark.png"
+const lightTouchIconVersion = iconVersion(lightTouchIconPath)
+const darkTouchIconVersion = iconVersion(darkTouchIconPath)
+
+const syncTouchIcon = `
+  (() => {
+    const colorScheme = window.matchMedia("(prefers-color-scheme: dark)");
+    function syncIcon() {
+      const icon = document.querySelector("link[data-dark-touch-icon]");
+      if (!icon) return;
+      const href = colorScheme.matches ? icon.dataset.darkTouchIcon : icon.dataset.lightTouchIcon;
+      if (href && icon.getAttribute("href") !== href) icon.setAttribute("href", href);
+    }
+    syncIcon();
+    colorScheme.addEventListener("change", syncIcon);
+    document.addEventListener("nav", syncIcon);
+  })();
+`
 
 export default (() => {
   const Head: QuartzComponent = ({
@@ -32,9 +56,10 @@ export default (() => {
     const url = new URL(`https://${cfg.baseUrl ?? "example.com"}`)
     const path = url.pathname as FullSlug
     const baseDir = fileData.slug === "404" ? path : pathToRoot(fileData.slug!)
-    const favicon = joinSegments(baseDir, "static/icon.png") + `?v=${faviconVersion}`
+    const favicon = joinSegments(baseDir, faviconPath) + `?v=${faviconVersion}`
     const fallbackFavicon = joinSegments(baseDir, "favicon.ico") + `?v=${faviconVersion}`
-    const touchIcon = joinSegments(baseDir, "static/footnote-icon-dark.png")
+    const lightTouchIcon = joinSegments(baseDir, lightTouchIconPath) + `?v=${lightTouchIconVersion}`
+    const darkTouchIcon = joinSegments(baseDir, darkTouchIconPath) + `?v=${darkTouchIconVersion}`
 
     // Url of current page
     const socialUrl =
@@ -100,7 +125,14 @@ export default (() => {
 
         <link rel="icon" type="image/x-icon" sizes="48x48" href={fallbackFavicon} />
         <link rel="icon" type="image/png" href={favicon} />
-        <link rel="apple-touch-icon" sizes="180x180" href={touchIcon} />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href={lightTouchIcon}
+          data-light-touch-icon={lightTouchIcon}
+          data-dark-touch-icon={darkTouchIcon}
+        />
+        <script data-persist="" dangerouslySetInnerHTML={{ __html: syncTouchIcon }} />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
 
