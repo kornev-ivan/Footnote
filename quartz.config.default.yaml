@@ -97,9 +97,9 @@ plugins:
     enabled: false
     order: 92
   - source: "@quartz-themes/core"
-    enabled: false
+    enabled: true
     options:
-      theme: Tokyo Night
+      theme: Cupertino
       mode: both
   - source: "@quartz-community/explicit-publish"
     enabled: false
